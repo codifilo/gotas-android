@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Gotas</string>
     <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+    <string-array name="section_titles">
+        <item>Chart</item>
+        <item>Map</item>
+    </string-array>
+    <string name="todo_chart_fragment">TODO: chart</string>
+    <string name="todo_map_fragment">TODO: map</string>
 </resources>

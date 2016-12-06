@@ -1,13 +1,11 @@
 package com.codifilia.gotas
 
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
-
-import android.support.v4.app.Fragment
+import android.content.Context
+import android.content.res.Resources.Theme
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.ThemedSpinnerAdapter
+import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,11 +14,9 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.content.Context
-import android.support.v7.widget.ThemedSpinnerAdapter
-import android.content.res.Resources.Theme
-
 import android.widget.TextView
+import com.codifilia.gotas.fragment.ChartFragment
+import com.codifilia.gotas.fragment.MapFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,29 +30,23 @@ class MainActivity : AppCompatActivity() {
 
         // Setup spinner
         val spinner = findViewById(R.id.spinner) as Spinner?
-        spinner!!.adapter = MyAdapter(
-                toolbar!!.context,
-                arrayOf("Section 1", "Section 2", "Section 3"))
+        spinner!!.adapter = MyAdapter(toolbar!!.context, resources.getStringArray(R.array.section_titles))
+
+        val fragments = listOf(ChartFragment(), MapFragment())
 
         spinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 // When the given dropdown item is selected, show its contents in the
                 // container view.
-                supportFragmentManager.beginTransaction()
-                        .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+
+                supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, fragments[position])
                         .commit()
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) { }
         }
-
-        val fab = findViewById(R.id.fab) as FloatingActionButton?
-        fab!!.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-
     }
 
 
@@ -81,7 +71,8 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private class MyAdapter(context: Context, objects: Array<String>) : ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, objects), ThemedSpinnerAdapter {
+    private class MyAdapter(context: Context, objects: Array<String>) :
+            ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, objects), ThemedSpinnerAdapter {
         private val mDropDownHelper: ThemedSpinnerAdapter.Helper
 
         init {
@@ -111,41 +102,6 @@ class MainActivity : AppCompatActivity() {
 
         override fun setDropDownViewTheme(theme: Theme?) {
             mDropDownHelper.dropDownViewTheme = theme
-        }
-    }
-
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    class PlaceholderFragment : Fragment() {
-
-        override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                                  savedInstanceState: Bundle?): View? {
-            val rootView = inflater!!.inflate(R.layout.fragment_main, container, false)
-            val textView = rootView.findViewById(R.id.section_label) as TextView
-            textView.text = getString(R.string.section_format, arguments.getInt(ARG_SECTION_NUMBER))
-            return rootView
-        }
-
-        companion object {
-            /**
-             * The fragment argument representing the section number for this
-             * fragment.
-             */
-            private val ARG_SECTION_NUMBER = "section_number"
-
-            /**
-             * Returns a new instance of this fragment for the given section
-             * number.
-             */
-            fun newInstance(sectionNumber: Int): PlaceholderFragment {
-                val fragment = PlaceholderFragment()
-                val args = Bundle()
-                args.putInt(ARG_SECTION_NUMBER, sectionNumber)
-                fragment.arguments = args
-                return fragment
-            }
         }
     }
 }
