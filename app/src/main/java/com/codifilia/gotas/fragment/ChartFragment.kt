@@ -64,18 +64,20 @@ class ChartFragment : Fragment() {
         chart = view?.findViewById(R.id.chart) as? LineChart
 
         val xAxis = chart?.xAxis
-        xAxis?.setCenterAxisLabels(true)
-        xAxis?.granularity = 1f
+        xAxis?.setDrawLabels(true)
+        xAxis?.granularity = 0.25f
         xAxis?.valueFormatter = IAxisValueFormatter { value, axis ->
-            val format = SimpleDateFormat("HH:mm")
-            format.format(Date(value.toLong()))
+            val formatter = SimpleDateFormat("HH:mm")
+            formatter.format(Date(value.toLong()))
         }
         xAxis?.setDrawGridLines(false)
+        xAxis?.setDrawAxisLine(true)
 
         val yAxis = chart?.axisLeft
         yAxis?.axisMinimum = 0f
-        yAxis?.setDrawGridLines(false)
         chart?.axisRight?.isEnabled = false
+        yAxis?.setDrawAxisLine(true)
+        yAxis?.setDrawGridLines(false)
     }
 
     fun fillChart(observations: List<Observation>) {
