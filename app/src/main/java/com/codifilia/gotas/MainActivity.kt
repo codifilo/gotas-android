@@ -1,11 +1,13 @@
 package com.codifilia.gotas
 
+import android.Manifest
 import android.content.Context
 import android.content.res.Resources.Theme
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.ThemedSpinnerAdapter
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,12 +19,19 @@ import android.widget.Spinner
 import android.widget.TextView
 import com.codifilia.gotas.fragment.ChartFragment
 import com.codifilia.gotas.fragment.MapFragment
+import com.patloew.rxlocation.RxLocation
+import io.vrinda.kotlinpermissions.PermissionCallBack
+import io.vrinda.kotlinpermissions.PermissionsActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : PermissionsActivity() {
+
+    var rxLocation: RxLocation? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        rxLocation = RxLocation(applicationContext)
 
         val toolbar = findViewById(R.id.toolbar) as Toolbar?
         setSupportActionBar(toolbar)
@@ -47,6 +56,18 @@ class MainActivity : AppCompatActivity() {
 
             override fun onNothingSelected(parent: AdapterView<*>) { }
         }
+
+        requestPermissions(Manifest.permission.ACCESS_COARSE_LOCATION, object : PermissionCallBack {
+            override fun permissionGranted() {
+                super.permissionGranted()
+                Log.v("Location permissions", "Granted")
+            }
+
+            override fun permissionDenied() {
+                super.permissionDenied()
+                Log.v("Location permissions", "Denied")
+            }
+        })
     }
 
 
