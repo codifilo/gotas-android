@@ -8,7 +8,7 @@ class ServiceTest {
     @Test
     fun basicRetrieveTest() {
         val prov = Service()
-        val response = prov.retrieve(38.7616023, -0.9452381)
+        val response = prov.retrieve(37.3753501, -6.0250983)
         assertTrue(response.isNotEmpty())
     }
 }

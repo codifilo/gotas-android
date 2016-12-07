@@ -49,7 +49,7 @@ object Parser {
                     ?.let {
                         val amount = get(precipAmountKey)
                                 .safePrimitive()
-                                ?.safeDouble()
+                                ?.safeFloat()
 
                         when (it) {
                             precipRainValue -> amount?.let { Precip.Rain(it) }
@@ -62,5 +62,5 @@ object Parser {
     private fun JsonElement.safeObject(): JsonObject? = if (isJsonObject) asJsonObject else null
     private fun JsonElement.safePrimitive(): JsonPrimitive? = if (isJsonPrimitive) asJsonPrimitive else null
     private fun JsonPrimitive.safeString(): String? = if (isString) asString else null
-    private fun JsonPrimitive.safeDouble(): Double? = if (isNumber) asDouble else null
+    private fun JsonPrimitive.safeFloat(): Float? = if (isNumber) asFloat else null
 }

@@ -3,34 +3,39 @@ package com.codifilia.gotas.fragment
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.codifilia.gotas.MainActivity
 import com.codifilia.gotas.R
 import com.codifilia.gotas.precipitation.Observation
 import com.codifilia.gotas.precipitation.Service
-import com.google.android.gms.location.LocationRequest
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.patloew.rxlocation.RxLocation
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ChartFragment : Fragment() {
 
     private val disposable = CompositeDisposable()
     private val service = Service()
-
-    private val locationRequest: LocationRequest = LocationRequest.create()
-            .setPriority(LocationRequest.PRIORITY_LOW_POWER)
-            .setInterval(60000)
+    private var chart: LineChart? = null
 
     override fun onCreateView(inflater: LayoutInflater?,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_chart, container, false)
+
+
+        val rootView: View? = inflater?.inflate(R.layout.fragment_chart, container, false)
+        initChart(rootView)
+        return rootView
     }
 
     override fun onResume() {
@@ -38,11 +43,11 @@ class ChartFragment : Fragment() {
 
         getRxLocation()
                 ?.location()
-                ?.updates(locationRequest)
+                ?.lastLocation()
                 ?.observeOn(Schedulers.io())
                 ?.map { it.observations() }
                 ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe { it.forEach { Log.d("Observation", it.toString()) } }
+                ?.subscribe { fillChart(it) }
                 ?.let { disposable.add(it) }
     }
 
@@ -55,6 +60,34 @@ class ChartFragment : Fragment() {
             ?.let { it as MainActivity }
             ?.let { it.rxLocation }
 
+    private fun initChart(view: View?) {
+        chart = view?.findViewById(R.id.chart) as? LineChart
+
+        val xAxis = chart?.xAxis
+        xAxis?.setCenterAxisLabels(true)
+        xAxis?.granularity = 1f
+        xAxis?.valueFormatter = IAxisValueFormatter { value, axis ->
+            val format = SimpleDateFormat("HH:mm")
+            format.format(Date(value.toLong()))
+        }
+        xAxis?.setDrawGridLines(false)
+
+        val yAxis = chart?.axisLeft
+        yAxis?.axisMinimum = 0f
+        yAxis?.setDrawGridLines(false)
+        chart?.axisRight?.isEnabled = false
+    }
+
+    fun fillChart(observations: List<Observation>) {
+        val entries: List<Entry> = observations.flatMap { o ->
+            o.value?.let { listOf(Entry(o.time.time.toFloat(), it.amount))} ?: listOf()
+        }
+        val dataSet = LineDataSet(entries, "Precip")
+        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+        val lineData = LineData(dataSet)
+        chart?.data = lineData
+        chart?.invalidate()
+    }
 
     private fun Location.observations(): List<Observation> = service.retrieve(latitude, longitude)
 }

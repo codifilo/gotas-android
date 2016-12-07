@@ -5,6 +5,5 @@
         <item>Chart</item>
         <item>Map</item>
     </string-array>
-    <string name="todo_chart_fragment">TODO: chart</string>
     <string name="todo_map_fragment">TODO: map</string>
 </resources>
