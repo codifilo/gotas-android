@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import com.codifilia.gotas.CustomMarkerView
 import com.codifilia.gotas.MainActivity
 import com.codifilia.gotas.R
 import com.codifilia.gotas.precipitation.Observation
@@ -15,6 +16,7 @@ import com.codifilia.gotas.precipitation.Service
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.LimitLine.LimitLabelPosition
+import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -91,6 +93,11 @@ class ChartFragment : Fragment() {
         // if disabled, scaling can be done on x- and y-axis separately
         chart?.setPinchZoom(true)
 
+        // create a custom MarkerView
+        val markerView = CustomMarkerView(context, R.layout.custom_marker_view)
+        chart?.let { markerView.chartView = it }
+        chart?.marker = markerView
+
         // set an alternative background color
         // mChart.setBackgroundColor(Color.GRAY);
 
@@ -165,6 +172,7 @@ class ChartFragment : Fragment() {
         dataSet.setDrawFilled(true)
 
         val lineData = LineData(dataSet)
+        lineData.isHighlightEnabled = true
         chart?.data = lineData
         chart?.invalidate()
     }
