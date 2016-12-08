@@ -5,27 +5,21 @@ import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import com.codifilia.gotas.CustomMarkerView
-import com.codifilia.gotas.MainActivity
 import com.codifilia.gotas.R
+import com.codifilia.gotas.activity.MainActivity
 import com.codifilia.gotas.precipitation.Observation
 import com.codifilia.gotas.precipitation.Service
+import com.codifilia.gotas.view.CustomMarkerView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.LimitLine.LimitLabelPosition
-import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
-import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.listener.ChartTouchListener
-import com.github.mikephil.charting.listener.OnChartGestureListener
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.patloew.rxlocation.RxLocation
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -46,7 +40,9 @@ class ChartFragment : Fragment() {
 
 
         val rootView: View? = inflater?.inflate(R.layout.fragment_chart, container, false)
+
         initChart(rootView)
+
         return rootView
     }
 
@@ -75,9 +71,6 @@ class ChartFragment : Fragment() {
     private fun initChart(view: View?) {
         chart = view?.findViewById(R.id.chart) as? LineChart
 
-
-        chart?.onChartGestureListener = onChartGestureListener
-        chart?.setOnChartValueSelectedListener(onChartValueSelectedListener)
         chart?.setDrawGridBackground(false)
 
         // no description text
@@ -178,45 +171,4 @@ class ChartFragment : Fragment() {
     }
 
     private fun Location.observations(): List<Observation> = service.retrieve(latitude, longitude)
-
-    private val onChartValueSelectedListener = object : OnChartValueSelectedListener {
-
-        override fun onValueSelected(e: Entry, h: Highlight) {
-        }
-
-        override fun onNothingSelected() {
-        }
-    }
-
-    private val onChartGestureListener = object : OnChartGestureListener {
-
-        override fun onChartGestureEnd(me: MotionEvent?,
-                                       lastPerformedGesture: ChartTouchListener.ChartGesture?) {
-        }
-
-        override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {
-        }
-
-        override fun onChartLongPressed(me: MotionEvent?) {
-        }
-
-        override fun onChartDoubleTapped(me: MotionEvent?) {
-        }
-
-        override fun onChartFling(me1: MotionEvent?,
-                                  me2: MotionEvent?,
-                                  velocityX: Float,
-                                  velocityY: Float) {
-        }
-
-        override fun onChartSingleTapped(me: MotionEvent?) {
-        }
-
-        override fun onChartGestureStart(me: MotionEvent?,
-                                         lastPerformedGesture: ChartTouchListener.ChartGesture?) {
-        }
-
-        override fun onChartTranslate(me: MotionEvent?, dX: Float, dY: Float) {
-        }
-    }
 }

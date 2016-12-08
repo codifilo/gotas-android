@@ -1,7 +1,8 @@
-package com.codifilia.gotas
+package com.codifilia.gotas.view
 
 import android.content.Context
 import android.widget.TextView
+import com.codifilia.gotas.R
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight

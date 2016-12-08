@@ -1,4 +1,4 @@
-package com.codifilia.gotas
+package com.codifilia.gotas.activity
 
 import android.Manifest
 import android.content.Context
@@ -17,6 +17,7 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
+import com.codifilia.gotas.R
 import com.codifilia.gotas.fragment.ChartFragment
 import com.codifilia.gotas.fragment.MapFragment
 import com.patloew.rxlocation.RxLocation
