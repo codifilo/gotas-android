@@ -6,4 +6,8 @@
         <item>Map</item>
     </string-array>
     <string name="todo_map_fragment">TODO: map</string>
+    <string name="light_rain_intensity">Light</string>
+    <string name="moderate_rain_intensity">Moderate</string>
+    <string name="heavy_rain_intensity">Heavy</string>
+    <string name="very_heavy_rain_intensity">Very heavy</string>
 </resources>
