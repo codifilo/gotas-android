@@ -3,6 +3,7 @@ package com.codifilia.gotas.activity
 import android.Manifest
 import android.content.Context
 import android.content.res.Resources.Theme
+import android.location.Location
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.ThemedSpinnerAdapter
@@ -21,18 +22,38 @@ import com.codifilia.gotas.R
 import com.codifilia.gotas.fragment.ChartFragment
 import com.codifilia.gotas.fragment.MapFragment
 import com.patloew.rxlocation.RxLocation
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import io.vrinda.kotlinpermissions.PermissionCallBack
 import io.vrinda.kotlinpermissions.PermissionsActivity
 
 class MainActivity : PermissionsActivity() {
 
-    var rxLocation: RxLocation? = null
+    private var locationTextView: TextView? = null
+    private var rxLocation: RxLocation? = null
+    private val disposable = CompositeDisposable()
+
+    val location: Observable<Location>?
+        get() = rxLocation
+                ?.location()
+                ?.lastLocation()
+                ?.toObservable()
+                ?.share()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         rxLocation = RxLocation(applicationContext)
+        locationTextView = findViewById(R.id.locationTextView) as? TextView
+
+        location?.observeOn(Schedulers.io())
+                ?.flatMap { loc -> rxLocation?.geocoding()?.fromLocation(loc)?.toObservable() }
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe { address ->  locationTextView?.text = address.locality }
+                ?.let { disposable.add(it) }
 
         val toolbar = findViewById(R.id.toolbar) as Toolbar?
         setSupportActionBar(toolbar)

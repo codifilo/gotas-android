@@ -33,6 +33,8 @@ class ChartFragment : Fragment() {
     private val disposable = CompositeDisposable()
     private val service = Service()
     private var chart: LineChart? = null
+    private val mainActivity: MainActivity?
+        get() = activity as? MainActivity
 
     override fun onCreateView(inflater: LayoutInflater?,
                               container: ViewGroup?,
@@ -43,30 +45,20 @@ class ChartFragment : Fragment() {
 
         initChart(rootView)
 
-        return rootView
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        getRxLocation()
-                ?.location()
-                ?.lastLocation()
+        mainActivity?.location
                 ?.observeOn(Schedulers.io())
                 ?.map { it.observations() }
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe { fillChart(it) }
                 ?.let { disposable.add(it) }
+
+        return rootView
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroyView() {
+        super.onDestroyView()
         disposable.clear()
     }
-
-    fun getRxLocation(): RxLocation? = activity
-            ?.let { it as MainActivity }
-            ?.let { it.rxLocation }
 
     private fun initChart(view: View?) {
         chart = view?.findViewById(R.id.chart) as? LineChart
@@ -90,14 +82,6 @@ class ChartFragment : Fragment() {
         val markerView = CustomMarkerView(context, R.layout.custom_marker_view)
         chart?.let { markerView.chartView = it }
         chart?.marker = markerView
-
-        // set an alternative background color
-        // mChart.setBackgroundColor(Color.GRAY);
-
-        // create a custom MarkerView (extend MarkerView) and specify the layout
-        // to use for it
-        // todo!
-
 
         // configure x-axis
         val xAxis = chart?.xAxis
