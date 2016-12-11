@@ -3,8 +3,13 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.codifilia.gotas.activity.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_refresh"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/action_refresh"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_select_location"
+        android:orderInCategory="100"
+        android:title="@string/action_select_location"
         app:showAsAction="never"/>
 </menu>

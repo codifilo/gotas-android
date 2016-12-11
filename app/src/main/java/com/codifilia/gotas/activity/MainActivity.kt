@@ -2,6 +2,7 @@ package com.codifilia.gotas.activity
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources.Theme
 import android.location.Location
 import android.os.Bundle
@@ -106,7 +107,11 @@ class MainActivity : PermissionsActivity() {
         val id = item.itemId
 
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh) {
+            return true
+        }
+        else if (id == R.id.action_select_location) {
+            startActivity(Intent(this, LocationPickerActivity::class.java))
             return true
         }
 
