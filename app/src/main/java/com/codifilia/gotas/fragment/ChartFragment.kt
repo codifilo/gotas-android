@@ -138,20 +138,25 @@ class ChartFragment : Fragment() {
     }
 
     fun fillChart(observations: List<Observation>) {
-        val entries: List<Entry> = observations.flatMap { o ->
-            o.value?.let { listOf(Entry(o.time.time.toFloat(), it.amount))} ?: listOf()
+        if (observations.isNotEmpty()) {
+            val entries: List<Entry> = observations.flatMap { o ->
+                o.value?.let { listOf(Entry(o.time.time.toFloat(), it.amount))} ?: listOf()
+            }
+
+            val dataSet = LineDataSet(entries, "mm/h")
+            dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+            //dataSet.color = Color.BLUE
+            dataSet.lineWidth = 2f
+            dataSet.setDrawFilled(true)
+
+            val lineData = LineData(dataSet)
+            lineData.isHighlightEnabled = true
+            chart?.data = lineData
+            chart?.invalidate()
         }
-
-        val dataSet = LineDataSet(entries, "mm/h")
-        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
-        //dataSet.color = Color.BLUE
-        dataSet.lineWidth = 2f
-        dataSet.setDrawFilled(true)
-
-        val lineData = LineData(dataSet)
-        lineData.isHighlightEnabled = true
-        chart?.data = lineData
-        chart?.invalidate()
+        else {
+            chart?.clear()
+        }
     }
 
     private fun Location.observations(): List<Observation> = service.retrieve(latitude, longitude)

@@ -4,7 +4,6 @@
     <string name="action_select_location">Select location</string>
     <string-array name="section_titles">
         <item>Chart</item>
-        <item>Map</item>
     </string-array>
     <string name="todo_map_fragment">TODO: map</string>
     <string name="light_rain_intensity">Light</string>
